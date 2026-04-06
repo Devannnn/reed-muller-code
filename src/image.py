@@ -2,20 +2,20 @@ import numpy as np
 from random import randint
 
 
-def gris(pixel):
+def to_grayscale_pixel(pixel):
     return np.uint8(round(np.mean(pixel)))
 
 
-def conversion(image):
-    ligne, colonne, _autre = np.shape(image)
-    image_gris = np.zeros((ligne, colonne), dtype=np.uint8)
-    for i in range(ligne):
-        for j in range(colonne):
-            image_gris[i, j] = gris(image[i, j])
-    return image_gris
+def to_grayscale_image(image):
+    rows, cols, _other = np.shape(image)
+    gray_image = np.zeros((rows, cols), dtype=np.uint8)
+    for i in range(rows):
+        for j in range(cols):
+            gray_image[i, j] = to_grayscale_pixel(image[i, j])
+    return gray_image
 
 
-def aplatir(image):
+def flatten_2d(image):
     values = []
     for row in image:
         for value in row:
@@ -23,12 +23,14 @@ def aplatir(image):
     return values
 
 
-def creation_erreurs_localises(encoded_image, localisation_erreurs, max_bit_index):
-    image_alteree = [np.array(bloc, copy=True) for bloc in encoded_image]
-    for index in localisation_erreurs:
+def inject_localized_bit_errors(encoded_image, error_locations, max_bit_index):
+    # The structure can be ragged (list of blocks), so avoid global np.copy.
+    altered_image = [np.array(block, copy=True) for block in encoded_image]
+    for index in error_locations:
         bit_index = randint(0, max_bit_index)
-        if image_alteree[index][bit_index]:
-            image_alteree[index][bit_index] = 0
+        if altered_image[index][bit_index]:
+            altered_image[index][bit_index] = 0
         else:
-            image_alteree[index][bit_index] = 1
-    return image_alteree
+            altered_image[index][bit_index] = 1
+    return altered_image
+

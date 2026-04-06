@@ -76,7 +76,7 @@ joconde_decode8, joconde_decode9 , joconde_decode10  , joconde_decode11, joconde
 joconde_decode14, joconde_decode15 , joconde_decode16 ]
 """
 
-def afficher(images):
+def display_images(images):
     lignes , colonnes = 2, 16
     axes=[]
     fig=plt.figure()
@@ -91,15 +91,15 @@ def afficher(images):
     plt.show()
 
 
-def nb(image):
-    nb_erreurs = 0
+def count_errors(image):
+    error_count = 0
     ligne,colonne = np.shape(image)
 
     for i in range(ligne):
         for j in range(colonne):
             if image[i][j] != joconde_grise[i][j]:
-                nb_erreurs += 1
-    return nb_erreurs
+                error_count += 1
+    return error_count
 
 
 
@@ -109,16 +109,16 @@ X  = np.array([100,1000,5000,10000,20000,30000,40000,50000,60000,70000,80000,900
 Y  = []
 Z  = []
 for i in range(17,32):
-    Y.append(nb(images[i]))
+    Y.append(count_errors(images[i]))
     Z.append(417*300)
 Y = np.array(Y)
 Z = np.array(Z)
 
 
-plt.plot(X,X/Z,linestyle='-',marker='o',color='b',label="Image non encodée")
-plt.plot(X,Y/Z,linestyle='-',marker='o',color='r',label="Image encodée puis décodée")
-plt.xlabel('Nombre d erreurs introduites')
-plt.ylabel('Taux d erreur')
+plt.plot(X,X/Z,linestyle='-',marker='o',color='b',label="Unencoded image")
+plt.plot(X,Y/Z,linestyle='-',marker='o',color='r',label="Encoded then decoded image")
+plt.xlabel('Number of introduced errors')
+plt.ylabel('Error rate')
 plt.legend()
 plt.show()
 
