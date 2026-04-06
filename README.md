@@ -14,7 +14,7 @@ The scripts encode grayscale image data, inject errors, decode, and display visu
 - `src/rm23.py`: pipeline and demo for `RM(2,3)`
 - `src/rm24.py`: pipeline and demo for `RM(2,4)`
 - `src/stats.py`: plotting/statistics helper script
-- `data/`: input images used by the demos (`joconde.jpg`, `surfer.jpg`)
+- `data/`: input image used by the demos (`joconde.jpg`)
 - `docs/`: references and project deliverables, including:
   - `presentation-oral.pdf`
   - `presentation-written.pdf`
@@ -41,5 +41,24 @@ python src/rm23.py
 python src/rm24.py
 ```
 
+## Results
+
+The generated outputs are available in `outputs/`:
+
+### Statistics
+
+- `outputs/stats/error_rate.png`
+- `outputs/stats/uncorrected_error_rate.png`
+
+![Error rate](outputs/stats/error_rate.png)
+![Uncorrected error rate](outputs/stats/uncorrected_error_rate.png)
+
+### Image reconstruction comparison
+
+- `outputs/image/error_correction_capacity_non_optimized.png`
+- `outputs/image/error_correction_capacity_optimized.png`
+
+![Error correction capacity (non optimized)](outputs/image/error_correction_capacity_non_optimized.png)
+![Error correction capacity (optimized)](outputs/image/error_correction_capacity_optimized.png)
 
 
