@@ -15,9 +15,8 @@ The scripts encode grayscale image data, inject errors, decode, and display visu
 - `src/rm24.py`: pipeline and demo for `RM(2,4)`
 - `src/stats.py`: plotting/statistics helper script
 - `data/`: input image used by the demos (`joconde.jpg`)
-- `docs/`: references and project deliverables, including:
-  - `presentation-oral.pdf`
-  - `presentation-written.pdf`
+- `docs/`: reference PDFs used during the project
+- `deliverables/`: project presentations and submitted work
 
 ## Requirements
 
@@ -60,5 +59,12 @@ The generated outputs are available in `outputs/`:
 
 ![Error correction capacity (non optimized)](outputs/image/error_correction_capacity_non_optimized.png)
 ![Error correction capacity (optimized)](outputs/image/error_correction_capacity_optimized.png)
+
+## Documents
+
+- Reference material in `docs/`
+- Project deliverables in `deliverables/`:
+  - `presentation-oral.pdf`
+  - `presentation-written.pdf`
 
 
