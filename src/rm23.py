@@ -275,6 +275,7 @@ for X in res2:
 
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
 surfeur          = plt.imread(DATA_DIR / "surfer.jpg")
 surfeur_gris     = to_grayscale_image(surfeur)
 
@@ -303,15 +304,18 @@ def display_images(images):
     lignes , colonnes = 2, 3
     axes=[]
     fig=plt.figure()
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     for a in range(lignes*colonnes):
         axes.append( fig.add_subplot(lignes, colonnes, a+1) )
         plt.axis('off')
         plt.title(str(a))
         plt.imshow(images[a], cmap='gray')
+        plt.imsave(RESULTS_DIR / f"rm23_{a}.png", images[a], cmap='gray')
 
 
     plt.tight_layout()
+    fig.savefig(RESULTS_DIR / "rm23_grid.png", dpi=300, bbox_inches="tight")
     plt.show()
 
 

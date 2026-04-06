@@ -22,6 +22,7 @@ from image import (
 
 
 RM = build_rm_generator_matrix(2,4)
+RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
 
 
 ## DECODING
@@ -279,16 +280,26 @@ def compute_joconde_demo():
 
 
 def display_images(IMAGES):
+    flat_images = []
+    for image in IMAGES:
+        if isinstance(image, (list, tuple)):
+            flat_images.extend(image)
+        else:
+            flat_images.append(image)
+
     LINES = 2
-    COLUMNS = len(IMAGES) // 2
+    COLUMNS = len(flat_images) // 2
     axes=[]
     fig=plt.figure()
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     for a in range(LINES*COLUMNS):
         axes.append( fig.add_subplot(LINES, COLUMNS, a+1) )
         plt.axis('off')
         plt.title(str(a))
-        plt.imshow(IMAGES[a], cmap='gray')
+        plt.imshow(flat_images[a], cmap='gray')
+        plt.imsave(RESULTS_DIR / f"rm24_{a}.png", flat_images[a], cmap='gray')
     plt.tight_layout()
+    fig.savefig(RESULTS_DIR / "rm24_grid.png", dpi=300, bbox_inches="tight")
     plt.show()
 
 
