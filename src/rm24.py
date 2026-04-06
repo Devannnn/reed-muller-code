@@ -3,117 +3,23 @@ import numpy as np
 from copy import deepcopy
 from random import randint
 import matplotlib.pyplot as plt
+from core import (
+    base10,
+    conv_base_2,
+    hyperplans,
+    matrice_generatrice_RM,
+    prod_scal_mod2,
+    produit_vecteur_matrice,
+    addition_mod2,
+    complementaire,
+)
+from image import conversion, aplatir, creation_erreurs_localises as _creation_erreurs_localises
 
-
-## Création de la matrice génératrice pour encoder
-
-# Fonction qui prend en entrée une liste représentant un entier en base 2 et qui le convertit en base 10.
-def base10(L):
-    x = 0
-    for i in range(len(L)):
-        x += L[i] * 2**(len(L)-i-1)
-    return x
-
-
-#Fonction réciproque, qui prend en entrée un entier et renvoie une liste représentant sa décomposition binaire.
-def conv_base_2(n,b):
-    L=[]
-    while b>0:
-        L.append(b%2)
-        b=b//2
-    for X in range(n-len(L)):
-        L.append(0)
-    L.reverse()
-    return L
-
-
-# Fonction qui énumère les éléments de F2_m qui correspondent à l'écriture binaire des entiers de 0 à (2**m)-1.
-def F2_m(m):
-    L=[]
-    for i in range(2**m):
-        L.append(conv_base_2(m,i))
-    return L
-
-
-# Fonction qui créée les m vecteurs à partir desquels on construit la matrice génératrice : on note ces vecteurs v_1 , v_2 , ... , v_m et on ajoute au début le vecteur v0 qui ne contient que des 1.
-def hyperplans(m):
-    F2 = F2_m(m)
-    liste_hyperplans=[[1 for i in range(2**m)]]
-    for j in range(m):
-        H=[]
-        for i in range(2**m):
-            if F2[i][j]:
-                H.append(0)
-            else:
-                H.append(1)
-        liste_hyperplans.append(H)
-    return liste_hyperplans
-
-
-# Fonction qui fait la multiplication terme à terme de 2 vecteurs v_i et v_j qui sont contenus dans la liste des m vecteurs.
-def produit_exterieur(v,i,j):
-    L=[]
-    for k in range(len(v[i])):
-        L.append(v[i][k]*v[j][k])
-    return L
-
-
-# Fonction qui créée la matrice génératrice en mettant les vecteurs v0,...,v_m pour les m premières lignes puis fait les produits extérieurs d'au plus r des vi pour compléter la matrice, on s'arrête ici à l'ordre 2.
-def matrice_generatrice_RM(r,m):
-    v = hyperplans(m)
-    if r==1:
-        return np.array(v)
-    elif r==2:
-        matrice_g = v.copy()
-        for i in range(1,m):
-            for j in range(1,m+1-i):
-                matrice_g.append(produit_exterieur(v,i,i+j))
-        return np.array(matrice_g)
-    else:
-        return "erreur"
 
 RM = matrice_generatrice_RM(2,4)
 
-## Fonctions pour faire des opérations sur les vecteurs
-
-# Fonction qui fait le produit scalaire de 2 vecteurs modulo 2.
-def prod_scal_mod2(v1,v2):
-    n = len(v1)
-    s = 0
-    for i in range(n):
-        s = s + v1[i]*v2[i]
-    return s%2
-
-
-# Fonction qui multiplie un vecteur ( une matrice à 1 ligne ) et une matrice.
-def produit_vecteur_matrice(v,N):
-    m,p = N.shape
-    P = np.array([0 for i in range(p)])
-    for j in range(p):
-        P[j] = prod_scal_mod2(v,N[:,j])
-    return P
-
-
-# Fonction qui prend des listes/vecteurs et les additionne modulo 2.
-def addition_mod2(M,N):
-    taille = len(M)
-    S = np.array([0 for i in range(taille)])
-    for i in range(taille):
-        S[i] = (M[i]+N[i])%2
-    return S
-
 
 ## DECODAGE
-
-# Fonction qui inverse les 0 et les 1 du vecteur.
-def complementaire(x):
-    c = x.copy()
-    for i in  range(len(c)):
-        if c[i]:
-            c[i]=0
-        else:
-            c[i]=1
-    return c
 
 
 # Fonction qui détermine les vecteurs caractéristiques d'un monôme de degré 2 dont la ligne est la ligne i.
@@ -242,32 +148,7 @@ def decodage_vecteur(r,m,message):
 
 
 
-## Conversion de l'image
-
-
-def gris(p):
-    return np.uint8(round(np.mean(p)))
-
-# Fonction qui convertit une image en niveau de gris.
-def conversion(a):
-    ligne, colonne,autre = np.shape(a)
-    g = np.zeros((ligne,colonne), dtype=np.uint8 )
-    for i in range(ligne):
-        for j in range(colonne):
-            g[i,j] = gris(a[i,j])
-    return g
-
-
 ## Encodage du message
-
-# Fonction qui transforme un vecteur de vecteur en une liste d'entiers pour faciliter l'encodage de chaque pixel.
-def aplatir(image):
-    L=[]
-    for X in image:
-        for Y in  X:
-            L.append(Y)
-    return L
-
 
 # Fonction qui convertit une image, i.e , une matrice de pixels en une liste de liste de bits.
 def decoupage(image):
@@ -344,14 +225,7 @@ def creation_erreurs(image, nb_erreurs):
 
 # Fonction qui introduit des erreurs selon une répartition déterminée au préalable.
 def creation_erreurs_localisee(image, localisation_erreurs):
-    image_alteree = deepcopy(image)
-    for X in localisation_erreurs:
-        a = randint(0, 15)
-        if image_alteree[X][a]:
-            image_alteree[X][a] = 0
-        else:
-            image_alteree[X][a] = 1
-    return image_alteree
+    return _creation_erreurs_localises(image, localisation_erreurs, 15)
 
 
 # Fonction qui introduit au maximum une erreur par blocs de 16 bits.
@@ -413,7 +287,8 @@ def afficher(IMAGES):
     plt.show()
 
 
-afficher(calcul_joconde())
+if __name__ == "__main__":
+    afficher(calcul_joconde())
 
 
 
